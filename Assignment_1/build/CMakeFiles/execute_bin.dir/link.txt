@@ -1,0 +1,1 @@
+/usr/bin/c++   -std=c++11  -rdynamic CMakeFiles/execute_bin.dir/src/main.cpp.o  -o execute_bin libglfw3.a libglew.a -lGL -lGLU -lrt -lm -ldl -lX11 -lpthread 
