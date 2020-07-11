@@ -47,19 +47,11 @@ float cameraVerticalAngle = -30.0f;
 bool  cameraFirstPerson = true; // press 1 or 2 to toggle this variable
 
 // Scaling
-float scaleFactorBase = 0.5f;
+float scaleFactorBase = 1.0f;
 
 // Translation
-float translateBodyX = 0.0f;
-float translateBodyZ = 0.0f;
-
-float translateLeftArmX = 0.55f;
-float translateRightArmX = -0.55f;
-float translateArmsZ = 0.0f;
-
-float translateLeftEyeX = 0.05f;
-float translateRightEyeX = -0.05f;
-float translateEyesZ = 0.15f;
+float translateX = 0.0f;
+float translateZ = 0.0f;
 
 //Rotation
 float rotateBase = 0.0f;
@@ -107,32 +99,16 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	
 	// Translate model
 	if (key == GLFW_KEY_RIGHT && action != GLFW_RELEASE) {
-		translateBodyX += 0.1f;
-        translateLeftArmX += 0.1f;
-        translateRightArmX += 0.1f;
-        translateLeftEyeX += 0.1f;
-        translateRightEyeX += 0.1f;
-		
+		translateX += 0.1f;
 	}
 	if (key == GLFW_KEY_LEFT && action != GLFW_RELEASE) {
-        translateBodyX -= 0.1f;
-        translateLeftArmX -= 0.1f;
-        translateRightArmX -= 0.1f;
-        translateLeftEyeX -= 0.1f;
-        translateRightEyeX -= 0.1f;
-		
+		translateX -= 0.1f;
 	}
 	if (key == GLFW_KEY_UP && action != GLFW_RELEASE) {
-        translateBodyZ += 0.1f;
-        translateArmsZ += 0.1f;
-        translateEyesZ += 0.1f;
-		
+		translateZ -= 0.1f;
 	}
 	if (key == GLFW_KEY_DOWN && action != GLFW_RELEASE) {
-        translateBodyZ -= 0.1f;
-        translateArmsZ -= 0.1f;
-        translateEyesZ -= 0.1f;
-		
+		translateZ += 0.1f;
 	}
 	// Show line view
 	if (key == GLFW_KEY_L && action != GLFW_RELEASE) {
@@ -157,26 +133,24 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	}
 
-    // Rotate model left
+    // Rotate model right
     if (key == GLFW_KEY_E && action != GLFW_RELEASE) {
-
+        rotateBase += 1.0f;
     }
+
+    // Rotate model left
+    if (key == GLFW_KEY_Q && action != GLFW_RELEASE) {
+        rotateBase -= 1.0f;
+    }
+
 	//resets everything 
 	if (key == GLFW_KEY_R && action != GLFW_RELEASE) {
         // Reset size
-        scaleFactorBase = 0.5f;
+        scaleFactorBase = 1.0f;
 
         // Reset position
-        translateBodyX = 0.0f;
-        translateBodyZ = 0.0f;
-
-        translateLeftArmX = 0.55f;
-        translateRightArmX = -0.55f;
-        translateArmsZ = 0.0f;
-
-        translateLeftEyeX = 0.05f;
-        translateRightEyeX = -0.05f;
-        translateEyesZ = 0.15f;
+        translateX = 0.0f;
+        translateZ = 0.0f;
 
         // Reset Angle
         rotateBase = 0.0f;
@@ -184,14 +158,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         // Reset Camera
         cameraPosition = glm::vec3(0.5f, 2.5f, 3.5f);
         cameraLookAt = glm::vec3(0.0f, 0.0f, -1.0f);
-	}
-	// Rotate the whole body to the right
-	if (key == GLFW_KEY_N && action != GLFW_RELEASE) {
-        rotateBase += 0.1f;
-	}
-	// Rotate the whole body to the left
-	if (key == GLFW_KEY_B && action != GLFW_RELEASE) {
-        rotateBase -= 0.1f;
 	}
 	// Rotate around x-axis
 	if (key == GLFW_KEY_C && action != GLFW_RELEASE) {
@@ -305,9 +271,6 @@ const char* getFragmentShaderSource()
                 "}";
 }
 
-Shader vertexSource = Shader("vertex.shader");
-Shader fragmentSource = Shader("fragment.shader");
-
 int compileAndLinkShaders()
 {
     // compile and link shader program
@@ -316,7 +279,7 @@ int compileAndLinkShaders()
 
     // vertex shader
     int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    const char* vertexShaderSource = vertexSource.read().c_str();
+    const char* vertexShaderSource = getVertexShaderSource();
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
     glCompileShader(vertexShader);
     
@@ -332,7 +295,7 @@ int compileAndLinkShaders()
     
     // fragment shader
     int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    const char* fragmentShaderSource = fragmentSource.read().c_str();
+    const char* fragmentShaderSource = getFragmentShaderSource();
     glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
     glCompileShader(fragmentShader);
     
@@ -600,10 +563,8 @@ int main(int argc, char*argv[])
         // Draw grid
 		glUniform1i(fillLoc, 0);
 		glBindVertexArray(grid_VAO);
-
-		mat4 identity_matrix = glm::mat4(1.0f);
 		
-        glUniformMatrix4fv(worldMatrixLocation, 1, GL_FALSE, glm::value_ptr(identity_matrix));
+        glUniformMatrix4fv(worldMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 		glDrawArrays(GL_LINES, 0, 4 * grid_vertices.size());
 
 		glBindVertexArray(0);
@@ -648,28 +609,111 @@ int main(int argc, char*argv[])
 
         glBindVertexArray(0);
 
+        int vbo = createVertexBufferObject();
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
         // Hierarchical modeling
-
         // The part matrix will deal with each part of the letter Y (3 cubes in total)
-        glm::mat4 partMatrix = glm::scale(modelMatrix, glm::vec3(-1.0f, 1.0f, 1.0f));
 
-        // glm::mat4 groupMatrix = glm::rotate(modelMatrix, glm::radians() ,glm::vec3(0.0f, 1.0f, 0.0f));
+        // Here are the matrices for handling the base (root) of Y
+        glm::mat4 partMatrix;
+        glm::mat4 groupMatrix = glm::translate(modelMatrix, glm::vec3(translateX, 0.0f, translateZ))
+        * glm::rotate(modelMatrix, glm::radians(rotateBase) ,glm::vec3(0.0f, 1.0f, 0.0f))
+        * glm::scale(modelMatrix, glm::vec3(scaleFactorBase, scaleFactorBase, scaleFactorBase));
 
+        glm::mat4 scalingMatrix = glm::scale(modelMatrix, glm::vec3(0.2f, 1.0f, 0.2f));
+        glm::mat4 translationMatrix = glm::translate(modelMatrix, vec3(-0.5f, 0.5f, 0.0f));
 
-
+        partMatrix = translationMatrix * scalingMatrix;
+        glm::mat4 worldMatrix = groupMatrix * partMatrix;
 
         // Make base cube for Y
-        glUniform1i(fillLoc, 4);
-        int baseCubeVbo = createVertexBufferObject();
-        glBindBuffer(GL_ARRAY_BUFFER, baseCubeVbo);
 
-        mat4 baseCubeMatrix = translate(modelMatrix, vec3(translateBodyX, 0.25f, translateBodyZ)) 
-            * scale(modelMatrix, vec3(scaleFactorBase, scaleFactorBase, scaleFactorBase))
-            * rotate(modelMatrix, glm::radians(rotateBase), glm::vec3(0.0f, 1.0f, 0.0f));
-        glUniformMatrix4fv(worldMatrixLocation, 1, GL_FALSE, &baseCubeMatrix[0][0]);
+        // Assign the color white for the Y model
+        glUniform1i(fillLoc, 4);
+        glUniformMatrix4fv(worldMatrixLocation, 1, GL_FALSE, &worldMatrix[0][0]);
         glDrawArrays(GL_TRIANGLES, 0, 12*3);
 
-        glBindVertexArray(0);
+
+        // Make left branch of Y 
+        glm::mat4 rotationMatrix = glm::rotate(modelMatrix, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        scalingMatrix = glm::scale(modelMatrix, glm::vec3(0.2f, 0.5f, 0.2f));
+        translationMatrix = glm::translate(modelMatrix, glm::vec3(-0.65f, 1.15f, 0.0f));
+       
+        partMatrix = translationMatrix * rotationMatrix * scalingMatrix;
+        worldMatrix = groupMatrix * partMatrix;
+
+        glUniformMatrix4fv(worldMatrixLocation, 1, GL_FALSE, &worldMatrix[0][0]);
+        glDrawArrays(GL_TRIANGLES, 0, 12*3);
+
+
+        // Make right branch of Y
+        rotationMatrix = glm::rotate(modelMatrix, glm::radians(-45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        translationMatrix = glm::translate(modelMatrix, glm::vec3(-0.35f, 1.15f, 0.0f));
+
+        partMatrix = translationMatrix * rotationMatrix * scalingMatrix;
+        worldMatrix = groupMatrix * partMatrix;
+
+        glUniformMatrix4fv(worldMatrixLocation, 1, GL_FALSE, &worldMatrix[0][0]);
+        glDrawArrays(GL_TRIANGLES, 0, 12*3);
+
+        glBindVertexArray(0); 
+
+
+        // Make 0 model, this is the base of the model
+        int numberVbo = createVertexBufferObject();
+        glBindBuffer(GL_ARRAY_BUFFER, numberVbo);
+
+        glm::mat4 partMatrixNumber;
+        glm::mat4 groupMatrixNumber = glm::translate(modelMatrix, glm::vec3(translateX, 0.0f, translateZ))
+        *glm::rotate(modelMatrix, glm::radians(rotateBase), glm::vec3(0.0f, 1.0f, 0.0f))
+        * glm::scale(modelMatrix, vec3(scaleFactorBase, scaleFactorBase, scaleFactorBase));
+
+        glm::mat4 scalingMatrixNumber = glm::scale(modelMatrix, glm::vec3(0.5f, 0.2f, 0.2f));
+        glm::mat4 translationMatrixNumber = glm::translate(modelMatrix, glm::vec3(0.5f, 0.1f, 0.0f));
+
+        partMatrixNumber = translationMatrixNumber * scalingMatrixNumber;
+        glm::mat4 worldMatrixNumber = groupMatrixNumber * partMatrixNumber;
+
+        // Assign the color white for the zero model
+        glUniform1i(fillLoc, 4);
+        glUniformMatrix4fv(worldMatrixLocation, 1, GL_FALSE, &worldMatrixNumber[0][0]);
+        glDrawArrays(GL_TRIANGLES, 0, 12*3);
+
+
+        // Make left side of zero model
+        scalingMatrixNumber = glm::scale(modelMatrix, glm::vec3(0.2f, 1.0f, 0.2f));
+        translationMatrixNumber = glm::translate(modelMatrix, glm::vec3(0.25f, 0.5f, 0.0f));
+
+        partMatrixNumber = translationMatrixNumber * scalingMatrixNumber;
+        worldMatrixNumber = groupMatrixNumber * partMatrixNumber;
+
+        glUniformMatrix4fv(worldMatrixLocation, 1, GL_FALSE, &worldMatrixNumber[0][0]);
+        glDrawArrays(GL_TRIANGLES, 0, 12*3);
+
+
+        // Make right side of zero model
+        scalingMatrixNumber = glm::scale(modelMatrix, glm::vec3(0.2f, 1.0f, 0.2f));
+        translationMatrixNumber = glm::translate(modelMatrix, glm::vec3(0.75f, 0.5f, 0.0f));
+
+        partMatrixNumber = translationMatrixNumber * scalingMatrixNumber;
+        worldMatrixNumber = groupMatrixNumber * partMatrixNumber;
+
+        glUniformMatrix4fv(worldMatrixLocation, 1, GL_FALSE, &worldMatrixNumber[0][0]);
+        glDrawArrays(GL_TRIANGLES, 0, 12*3);
+
+        
+        //Make the top of the zero model
+        scalingMatrixNumber = glm::scale(modelMatrix, glm::vec3(0.5f, 0.2f, 0.2f));
+        translationMatrixNumber = glm::translate(modelMatrix, glm::vec3(0.5f, 0.9f, 0.0f));
+
+        partMatrixNumber = translationMatrixNumber * scalingMatrixNumber;
+        worldMatrixNumber = groupMatrixNumber * partMatrixNumber;
+
+        glUniformMatrix4fv(worldMatrixLocation, 1, GL_FALSE, &worldMatrixNumber[0][0]);
+        glDrawArrays(GL_TRIANGLES, 0, 12*3);
+
+        glBindVertexArray(0); 
         
         
         // End Frame
