@@ -59,6 +59,8 @@ float rotateBase = 0.0f;
 float rotateX = 0.0f;
 float rotateY = 0.0f;
 
+float zoom = 45.0f;
+
 // General Vector deallocation. 
 template<typename T>
 void resetToDefault(T &value)
@@ -159,15 +161,23 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         cameraPosition = glm::vec3(0.5f, 2.5f, 3.5f);
         cameraLookAt = glm::vec3(0.0f, 0.0f, -1.0f);
 	}
-	// Rotate around x-axis
+	// Orient to above the y-axis
 	if (key == GLFW_KEY_C && action != GLFW_RELEASE) {
         cameraPosition = glm::vec3(0.0f, 2.5f, 0.0f);
-        cameraLookAt = glm::vec3(0.0f, 0.0f, -1.0f);
+        cameraLookAt = glm::vec3(0.0f, -1.0f, 0.0f);
 	}
 	//go right (also face right, also cannot go past walls)
 	if (key == GLFW_KEY_D && action != GLFW_RELEASE) {
 
 	}
+}
+
+// glfw: whenever the window size changed (by OS or user resize) this callback function executes
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    // make sure the viewport matches the new window dimensions; note that width and 
+    // height will be significantly larger than specified on retina displays.
+    glViewport(0, 0, width, height);
 }
 
 void cursor_cb(GLFWwindow* window, double xpos, double ypos) {
@@ -180,10 +190,10 @@ void cursor_cb(GLFWwindow* window, double xpos, double ypos) {
 		int width, height;
 		glfwGetFramebufferSize(window, &width, &height);
 
-		double xdiff = xpos - (width / 2);
-		double ydiff = ypos - (height / 2);
+		double xdiff = xpos - (width / 2.0f);
+		double ydiff = ypos - (height / 2.0f);
 		cameraPosition += cameraLookAt*(float)ydiff*-0.005f*0.04f;
-		glfwSetCursorPos(window, width / 2, height / 2);
+		glfwSetCursorPos(window, width / 2.0f, height / 2.0f);
 	}
 
 	if (pan == GLFW_PRESS) {
@@ -213,9 +223,18 @@ void cursor_cb(GLFWwindow* window, double xpos, double ypos) {
 	}
 }
 
+// Whenever the mouse scroll wheel scrolls, this callback is called
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+        zoom -= (float)yoffset;
+        if (zoom < 1.0f)
+            zoom = 1.0f;
+        if (zoom > 45.0f)
+            zoom = 45.0f; 
+}
+
 const char* getVertexShaderSource()
 {
-    // For now, you use a string for your shader code, in the assignment, shaders will be stored in .glsl files
     return
                 "#version 330 core\n"
                 "layout (location = 0) in vec3 aPos;"
@@ -449,10 +468,9 @@ int main(int argc, char*argv[])
         return -1;
     }
     glfwMakeContextCurrent(window);
-
-    // @TODO 3 - Disable mouse cursor
-    // ...
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    
     
     // Initialize GLEW
     glewExperimental = true; // Needed for core profile
@@ -470,11 +488,13 @@ int main(int argc, char*argv[])
     
     // We can set the shader once, since we have only one
     glUseProgram(shaderProgram);
+
+    int width, height;
+	glfwGetFramebufferSize(window, &width, &height);
+    glViewport(0, 0, width, height);
     
     // Set projection matrix for shader, this won't change
-    mat4 projectionMatrix = glm::perspective(70.0f,            // field of view in degrees
-                                             800.0f / 600.0f,  // aspect ratio
-                                             0.01f, 100.0f);   // near and far (near > 0)
+    glm::mat4 projectionMatrix = glm::perspective(glm::radians(zoom),(GLfloat) width / (GLfloat) height, 0.01f, 100.0f); 
     
     GLuint projectionMatrixLocation = glGetUniformLocation(shaderProgram, "projectionMatrix");
     glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, &projectionMatrix[0][0]);
@@ -491,22 +511,16 @@ int main(int argc, char*argv[])
     GLuint viewMatrixLocation = glGetUniformLocation(shaderProgram, "viewMatrix");
     glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, &viewMatrix[0][0]);
 
-    
-    
-    // Define and upload geometry to the GPU here ...
-    
     // For frame time
     float lastFrameTime = glfwGetTime();
     int lastMouseLeftState = GLFW_RELEASE;
     double lastMousePosX, lastMousePosY;
     glfwGetCursorPos(window, &lastMousePosX, &lastMousePosY);
+    glfwSetCursorPosCallback(window, cursor_cb);
+    glfwSetScrollCallback(window, scroll_callback);
     
-    // Other OpenGL states to set once
     // Enable Backface culling
     glEnable(GL_CULL_FACE);
-    
-    // @TODO 1 - Enable Depth Test
-    // ...
     glEnable(GL_DEPTH_TEST);
     
     
@@ -569,7 +583,6 @@ int main(int argc, char*argv[])
 
 		glBindVertexArray(0);
         // Vectors take up a lot of memory and was not being deallocated. This will deallocate the memory
-        // Vectors still make process memory increase however. Look for alternative way to store the vertices?
         emptyGridVec();
 
 
@@ -741,8 +754,7 @@ int main(int argc, char*argv[])
         
         
         double mousePosX, mousePosY;
-        
-        glfwSetCursorPosCallback(window, cursor_cb);
+
         glfwGetCursorPos(window, &mousePosX, &mousePosY);
         glfwSetKeyCallback(window, key_callback);
         
@@ -773,18 +785,10 @@ int main(int argc, char*argv[])
         
         cameraLookAt = vec3(cosf(phi)*cosf(theta), sinf(phi), -cosf(phi)*sinf(theta));
         vec3 cameraSideVector = glm::cross(cameraLookAt, vec3(0.0f, 1.0f, 0.0f));
-        
-        // Why do we normalize? If we don't norm the vert will affect left to right movement
-        
-        /*  
-            Class Notes: The angle you look up and down would affect the speed at which you move left and right
-            The angle between vectors matter
-        */
+
         glm::normalize(cameraSideVector);
          
-        
-        // @TODO 5 = use camera lookat and side vectors to update positions with ASDW
-        // adjust code below
+
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) // move camera to the left
         {
             cameraPosition -= cameraSideVector * currentCameraSpeed * dt;
@@ -805,16 +809,6 @@ int main(int argc, char*argv[])
             cameraPosition += cameraLookAt * currentCameraSpeed * dt;
         }
 
-
-
-
-
-        
-      
-        // TODO 6
-        // Set the view matrix for first and third person cameras
-        // - In first person, camera lookat is set like below
-        // - In third person, camera position is on a sphere looking towards center
         mat4 viewMatrix = mat4(1.0);
         
         if(cameraFirstPerson) {
