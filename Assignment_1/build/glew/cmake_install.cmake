@@ -1,4 +1,4 @@
-# Install script for directory: /home/zayn/GraphicsProgramming/practice/Assignment_1/ThirdParty/glew-2.1.0
+# Install script for directory: /home/zayn/GraphicsProgramming/Comp371/Assignment_1/ThirdParty/glew-2.1.0
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

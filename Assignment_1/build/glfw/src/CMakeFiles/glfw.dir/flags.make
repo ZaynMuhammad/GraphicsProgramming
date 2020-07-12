@@ -6,7 +6,7 @@ C_FLAGS = -fPIC   -Wall
 
 C_DEFINES = -D_GLFW_USE_CONFIG_H
 
-C_INCLUDES = -I/home/zayn/GraphicsProgramming/practice/Assignment_1/src -I/home/zayn/GraphicsProgramming/practice/Assignment_1/ThirdParty/glm -I/home/zayn/GraphicsProgramming/practice/Assignment_1/ThirdParty/glfw-3.3/include -I/home/zayn/GraphicsProgramming/practice/Assignment_1/ThirdParty/glfw-3.3/src -I/home/zayn/GraphicsProgramming/practice/Assignment_1/build/glfw/src 
+C_INCLUDES = -I/home/zayn/GraphicsProgramming/Comp371/Assignment_1/src -I/home/zayn/GraphicsProgramming/Comp371/Assignment_1/ThirdParty/glm -I/home/zayn/GraphicsProgramming/Comp371/Assignment_1/ThirdParty/glfw-3.3/include -I/home/zayn/GraphicsProgramming/Comp371/Assignment_1/ThirdParty/glfw-3.3/src -I/home/zayn/GraphicsProgramming/Comp371/Assignment_1/build/glfw/src 
 
 # Custom flags: glfw/src/CMakeFiles/glfw.dir/context.c.o_FLAGS = -Wdeclaration-after-statement
 

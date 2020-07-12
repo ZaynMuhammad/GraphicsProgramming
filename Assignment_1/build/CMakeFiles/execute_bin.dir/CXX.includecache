@@ -1496,17 +1496,17 @@ detail/setup.hpp
 detail/func_vector_relational.inl
 ../ThirdParty/glm/glm/detail/func_vector_relational.inl
 
-/home/zayn/GraphicsProgramming/practice/Assignment_1/src/grid.hpp
+/home/zayn/GraphicsProgramming/Comp371/Assignment_1/src/grid.hpp
 vector
 -
 glm/glm.hpp
-/home/zayn/GraphicsProgramming/practice/Assignment_1/src/glm/glm.hpp
+/home/zayn/GraphicsProgramming/Comp371/Assignment_1/src/glm/glm.hpp
 glm/gtc/matrix_transform.hpp
-/home/zayn/GraphicsProgramming/practice/Assignment_1/src/glm/gtc/matrix_transform.hpp
+/home/zayn/GraphicsProgramming/Comp371/Assignment_1/src/glm/gtc/matrix_transform.hpp
 glm/gtc/type_ptr.hpp
-/home/zayn/GraphicsProgramming/practice/Assignment_1/src/glm/gtc/type_ptr.hpp
+/home/zayn/GraphicsProgramming/Comp371/Assignment_1/src/glm/gtc/type_ptr.hpp
 
-/home/zayn/GraphicsProgramming/practice/Assignment_1/src/main.cpp
+/home/zayn/GraphicsProgramming/Comp371/Assignment_1/src/main.cpp
 iostream
 -
 list
@@ -1534,11 +1534,11 @@ string.h
 random
 -
 grid.hpp
-/home/zayn/GraphicsProgramming/practice/Assignment_1/src/grid.hpp
+/home/zayn/GraphicsProgramming/Comp371/Assignment_1/src/grid.hpp
 shader.h
-/home/zayn/GraphicsProgramming/practice/Assignment_1/src/shader.h
+/home/zayn/GraphicsProgramming/Comp371/Assignment_1/src/shader.h
 
-/home/zayn/GraphicsProgramming/practice/Assignment_1/src/shader.h
+/home/zayn/GraphicsProgramming/Comp371/Assignment_1/src/shader.h
 fstream
 -
 iostream

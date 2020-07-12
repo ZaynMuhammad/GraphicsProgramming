@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/zayn/GraphicsProgramming/practice/Assignment_1
+CMAKE_SOURCE_DIR = /home/zayn/GraphicsProgramming/Comp371/Assignment_1
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/zayn/GraphicsProgramming/practice/Assignment_1/build
+CMAKE_BINARY_DIR = /home/zayn/GraphicsProgramming/Comp371/Assignment_1/build
 
 # Utility rule file for uninstall.
 
@@ -54,7 +54,7 @@ CMAKE_BINARY_DIR = /home/zayn/GraphicsProgramming/practice/Assignment_1/build
 include glfw/CMakeFiles/uninstall.dir/progress.make
 
 glfw/CMakeFiles/uninstall:
-	cd /home/zayn/GraphicsProgramming/practice/Assignment_1/build/glfw && /usr/bin/cmake -P /home/zayn/GraphicsProgramming/practice/Assignment_1/build/glfw/cmake_uninstall.cmake
+	cd /home/zayn/GraphicsProgramming/Comp371/Assignment_1/build/glfw && /usr/bin/cmake -P /home/zayn/GraphicsProgramming/Comp371/Assignment_1/build/glfw/cmake_uninstall.cmake
 
 uninstall: glfw/CMakeFiles/uninstall
 uninstall: glfw/CMakeFiles/uninstall.dir/build.make
@@ -67,10 +67,10 @@ glfw/CMakeFiles/uninstall.dir/build: uninstall
 .PHONY : glfw/CMakeFiles/uninstall.dir/build
 
 glfw/CMakeFiles/uninstall.dir/clean:
-	cd /home/zayn/GraphicsProgramming/practice/Assignment_1/build/glfw && $(CMAKE_COMMAND) -P CMakeFiles/uninstall.dir/cmake_clean.cmake
+	cd /home/zayn/GraphicsProgramming/Comp371/Assignment_1/build/glfw && $(CMAKE_COMMAND) -P CMakeFiles/uninstall.dir/cmake_clean.cmake
 .PHONY : glfw/CMakeFiles/uninstall.dir/clean
 
 glfw/CMakeFiles/uninstall.dir/depend:
-	cd /home/zayn/GraphicsProgramming/practice/Assignment_1/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/zayn/GraphicsProgramming/practice/Assignment_1 /home/zayn/GraphicsProgramming/practice/Assignment_1/ThirdParty/glfw-3.3 /home/zayn/GraphicsProgramming/practice/Assignment_1/build /home/zayn/GraphicsProgramming/practice/Assignment_1/build/glfw /home/zayn/GraphicsProgramming/practice/Assignment_1/build/glfw/CMakeFiles/uninstall.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/zayn/GraphicsProgramming/Comp371/Assignment_1/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/zayn/GraphicsProgramming/Comp371/Assignment_1 /home/zayn/GraphicsProgramming/Comp371/Assignment_1/ThirdParty/glfw-3.3 /home/zayn/GraphicsProgramming/Comp371/Assignment_1/build /home/zayn/GraphicsProgramming/Comp371/Assignment_1/build/glfw /home/zayn/GraphicsProgramming/Comp371/Assignment_1/build/glfw/CMakeFiles/uninstall.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : glfw/CMakeFiles/uninstall.dir/depend
 

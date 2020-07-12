@@ -1,9 +1,9 @@
 
-if (NOT EXISTS "/home/zayn/GraphicsProgramming/practice/Assignment_1/build/glfw/install_manifest.txt")
-  message(FATAL_ERROR "Cannot find install manifest: \"/home/zayn/GraphicsProgramming/practice/Assignment_1/build/glfw/install_manifest.txt\"")
+if (NOT EXISTS "/home/zayn/GraphicsProgramming/Comp371/Assignment_1/build/glfw/install_manifest.txt")
+  message(FATAL_ERROR "Cannot find install manifest: \"/home/zayn/GraphicsProgramming/Comp371/Assignment_1/build/glfw/install_manifest.txt\"")
 endif()
 
-file(READ "/home/zayn/GraphicsProgramming/practice/Assignment_1/build/glfw/install_manifest.txt" files)
+file(READ "/home/zayn/GraphicsProgramming/Comp371/Assignment_1/build/glfw/install_manifest.txt" files)
 string(REGEX REPLACE "\n" ";" files "${files}")
 
 foreach (file ${files})

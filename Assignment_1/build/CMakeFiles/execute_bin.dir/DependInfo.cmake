@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/zayn/GraphicsProgramming/practice/Assignment_1/src/main.cpp" "/home/zayn/GraphicsProgramming/practice/Assignment_1/build/CMakeFiles/execute_bin.dir/src/main.cpp.o"
+  "/home/zayn/GraphicsProgramming/Comp371/Assignment_1/src/main.cpp" "/home/zayn/GraphicsProgramming/Comp371/Assignment_1/build/CMakeFiles/execute_bin.dir/src/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -18,8 +18,8 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/zayn/GraphicsProgramming/practice/Assignment_1/build/glfw/src/CMakeFiles/glfw.dir/DependInfo.cmake"
-  "/home/zayn/GraphicsProgramming/practice/Assignment_1/build/glew/CMakeFiles/glew.dir/DependInfo.cmake"
+  "/home/zayn/GraphicsProgramming/Comp371/Assignment_1/build/glfw/src/CMakeFiles/glfw.dir/DependInfo.cmake"
+  "/home/zayn/GraphicsProgramming/Comp371/Assignment_1/build/glew/CMakeFiles/glew.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.
